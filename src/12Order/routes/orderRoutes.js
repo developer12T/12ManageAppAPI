@@ -1,8 +1,9 @@
 const express = require('express');
-const { getOrderCms } = require('../controllers/orderController');
+const { getOrderCm, getOrderCmDetail } = require('../controllers/orderController');
 
 const router = express.Router();
 
-router.get('/getOrderCms', getOrderCms);
+router.get('/getOrderCm', getOrderCm);
+router.post('/getOrderCmDetail', getOrderCmDetail);
 
 module.exports = router;
