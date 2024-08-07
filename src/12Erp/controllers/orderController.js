@@ -7,32 +7,32 @@ exports.syncOrders = async (req, res, next) => {
 
         data.sort((a, b) => a.orderNo.localeCompare(b.orderNo));
 
-        const { data: seriesData } = await axios.post('http://192.168.2.97:8383/M3API/OrderManage/Order/getNumberSeriesINV', {
-            series: "C",
-            seriesyear: "2024",
+        const { data: seriesData } = await axios.post('http://192.168.2.97:8383/M3API/OrderManage/Order/getNumberSeries', {
+            series: "ย",
+            seriestype: "01",
             companycode: 410,
             seriesname: "0"
         });
 
         let lastNo = seriesData[0].lastno;
-        const prefixNo = seriesData[0].prefixno;
+        // const prefixNo = seriesData[0].prefixno;
 
         for (const order of data) {
-            const { createDate, orderNo, warehouse, storeId, saleCode, list } = order;
+            const { createDate, warehouse, orderNo, storeId, saleCode, list } = order;
             const formattedDate = createDate.split('/').reverse().join('');
 
-            lastNo += 1;
-            const cuor = prefixNo + lastNo;
-
+            const orno = lastNo += 1;
+            // const cuor = prefixNo + lastNo;
+            const test = []
             for (let index = 0; index < list.length; index++) {
                 const item = list[index];
 
                 const newOrder = {
                     OAORDT: formattedDate,
                     RLDT: formattedDate,
-                    ORNO: orderNo,
-                    CUOR: cuor,
-                    OAORTP: '031',
+                    ORNO: orno,
+                    CUOR: '',
+                    OAORTP: 'M31',
                     WHLO: warehouse,
                     FACI: 'F10',
                     OAFRE1: 'YSEND',
@@ -50,13 +50,13 @@ exports.syncOrders = async (req, res, next) => {
                     INSERT_AT: new Date().toISOString(),
                     UPDATE_AT: new Date().toISOString()
                 };
-
+                //  test.push(newOrder)
                 await Order.create(newOrder);
             }
-
-            await axios.post('http://192.168.2.97:8383/M3API/OrderManage/Order/updateNumberRunningINV', {
+            // console.log(test);
+            await axios.post('http://192.168.2.97:8383/M3API/OrderManage/Order/updateNumberRunning', {
                 lastno: lastNo,
-                series: "C",
+                series: "ย",
                 seriesyear: "2024",
                 companycode: 410,
                 seriesname: "0"
@@ -69,6 +69,7 @@ exports.syncOrders = async (req, res, next) => {
         }
 
         res.status(200).json({ message: 'Data synced successfully' });
+        // res.status(200).json('test');
     } catch (error) {
         console.error('Error syncing data:', error);
         next(error);
