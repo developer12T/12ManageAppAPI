@@ -18,7 +18,7 @@ exports.syncOrders = async (req, res, next) => {
         // const prefixNo = seriesData[0].prefixno;
 
         for (const order of data) {
-            const { createDate, warehouse, orderNo, storeId, saleCode, list } = order;
+            const { createDate, warehouse, note, orderNo, storeId, saleCode, list } = order;
             const formattedDate = createDate.split('/').reverse().join('');
 
             const orno = lastNo += 1;
@@ -34,6 +34,7 @@ exports.syncOrders = async (req, res, next) => {
                     CUOR: '',
                     OAORTP: 'M31',
                     WHLO: warehouse,
+                    OAYREF: note,
                     FACI: 'F10',
                     OAFRE1: 'YSEND',
                     CUNO: storeId,
