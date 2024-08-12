@@ -58,7 +58,7 @@ exports.syncOrders = async (req, res, next) => {
             await axios.post('http://192.168.2.97:8383/M3API/OrderManage/Order/updateNumberRunning', {
                 lastno: lastNo,
                 series: "ย",
-                seriesyear: "2024",
+                seriestype: "01",
                 companycode: 410,
                 seriesname: "0"
             });
