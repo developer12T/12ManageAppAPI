@@ -1,15 +1,15 @@
-// const { DataTypes } = require('sequelize');
-// const { sequelize } = require('../config/db');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
 // console.log(sequelize);
-require('dotenv').config()
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize(process.env.DATA_DB, process.env.USER_NAME_DATABASE_MS_SQL, process.env.PASSWORD_DATABASE_MS_SQL, {
-  host: process.env.SERVER_DATABASE_MS_SQL,
-  dialect: 'mssql'
-})
+// require('dotenv').config()
+// const { Sequelize, DataTypes } = require('sequelize');
+// const sequelize = new Sequelize(process.env.DATA_DB, process.env.USER_NAME_DATABASE_MS_SQL, process.env.PASSWORD_DATABASE_MS_SQL, {
+//   host: process.env.SERVER_DATABASE_MS_SQL,
+//   dialect: 'mssql'
+// })
 
-const Customer = sequelize.define('data_customer_cm', {
+const Customer = sequelize.define('data_customer_cm_test', {
     OKCUNO: {
         type: DataTypes.STRING,
         allowNull: false,

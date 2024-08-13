@@ -1,15 +1,15 @@
-// const { DataTypes } = require('sequelize');
-// const { sequelize } = require('../config/db');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
 // console.log(sequelize);
-require('dotenv').config()
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize(process.env.DATA_DB, process.env.USER_NAME_DATABASE_MS_SQL, process.env.PASSWORD_DATABASE_MS_SQL, {
-  host: process.env.SERVER_DATABASE_MS_SQL,
-  dialect: 'mssql'
-})
+// require('dotenv').config()
+// const { Sequelize, DataTypes } = require('sequelize');
+// const sequelize = new Sequelize(process.env.DATA_DB, process.env.USER_NAME_DATABASE_MS_SQL, process.env.PASSWORD_DATABASE_MS_SQL, {
+//   host: process.env.SERVER_DATABASE_MS_SQL,
+//   dialect: 'mssql'
+// })
 
-const Order = sequelize.define('data_order_cm', {
+const Order = sequelize.define('data_order_cm_test', {
     OAORDT: {
         type: DataTypes.STRING,
         allowNull: false
