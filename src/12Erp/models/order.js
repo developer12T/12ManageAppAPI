@@ -9,7 +9,7 @@ const { sequelize } = require('../config/db');
 //   dialect: 'mssql'
 // })
 
-const Order = sequelize.define('data_order_cm_test', {
+const Order = sequelize.define('data_order_cm', {
     OAORDT: {
         type: DataTypes.STRING,
         allowNull: false
