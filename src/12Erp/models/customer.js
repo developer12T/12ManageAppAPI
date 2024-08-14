@@ -9,7 +9,7 @@ const { sequelize } = require('../config/db');
 //   dialect: 'mssql'
 // })
 
-const Customer = sequelize.define('data_customer_cm_test', {
+const Customer = sequelize.define('data_customer_cm', {
     OKCUNO: {
         type: DataTypes.STRING,
         allowNull: false,
