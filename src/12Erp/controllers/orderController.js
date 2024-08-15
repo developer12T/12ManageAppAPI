@@ -111,6 +111,7 @@ exports.createOrder = async (req, res, next) => {
                     CUOR: '',
                     OAORTP: 'M31',
                     WHLO: warehouse,
+                    OAOREF: orderNo,
                     OAYREF: note,
                     FACI: 'F10',
                     OAFRE1: 'YSEND',
@@ -149,7 +150,6 @@ exports.createOrder = async (req, res, next) => {
             })
 
             // const requestTimeout = 1*60*1000; 
-
             // await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[TEST_DATA_API_SEND_ORDER_CASH]', {
             // }).catch(error => {
             //     console.error('Error executing DATA_API_SEND_ORDER_CASH:', error)
@@ -172,11 +172,12 @@ exports.createOrder = async (req, res, next) => {
                 seriestype: "01",
                 companycode: 410,
                 seriesname: "0"
-            });
+            })
 
             await axios.post(`${process.env.CMS_API_BASE_URL}/order/UpdateOrder`, {
                 order: orderNo,
-                status: "15"
+                status: "15",
+                co: orno
             });
         }
 
