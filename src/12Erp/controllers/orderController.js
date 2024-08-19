@@ -133,12 +133,13 @@ exports.createOrder = async (req, res, next) => {
                 await Order.create(newOrder)
             }
 
+            const requestTimeout = 1*60*2000; 
             await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[DATA_API_SEND_ORDER_CASH]', {
+                timeout: requestTimeout,
             }).catch(error => {
                 console.error('Error executing DATA_API_SEND_ORDER_CASH:', error)
                 throw new Error('Failed to execute stored procedure DATA_API_SEND_ORDER_CASH')
             })
-            const requestTimeout = 1*60*1000; 
             await sequelize.query('EXEC [DATA_API_M3].[dbo].[INSERT_ORDER_M3] @channel = :param1', {
                 timeout: requestTimeout,
                 replacements: {

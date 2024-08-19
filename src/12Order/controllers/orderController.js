@@ -248,7 +248,7 @@ const convertToUnits = (qty, unitText) => {
         convertedUnits.large.qty = qty
     } else if (['BAG', 'PAC', 'CRT'].includes(unitText)) {
         convertedUnits.medium.qty = qty
-    } else {
+    } else if (['PCS','BOT'].includes(unitText)) {
         convertedUnits.small.qty = qty
     }
 
