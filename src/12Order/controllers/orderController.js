@@ -3,13 +3,20 @@ const axios = require('axios')
 
 exports.getOrderCm = async (req, res, next) => {
     try {
-        const response = await axiosInstance.get('/order/getAll')
+        const { status } = req.query
+        console.log('Status:', status)
+        if (!status) {
+            return res.status(400).json({ message: "Status query parameter is required." });
+        }
+        const response = await axiosInstance.get('/order/getAll', {
+            params: { status }
+        })
         res.status(200).json(response.data)
     } catch (error) {
         console.error('Error fetching data from external API:', error)
         next(error); 
     }
-};
+}
 
 exports.getOrderCmDetail = async (req, res, next) => {
     try {
