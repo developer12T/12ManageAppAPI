@@ -5,7 +5,7 @@ const customerRoutes = require('./routes/customerRoutes')
 
 const router = express.Router()
 
-router.use('/erp', orderRoutes)
+router.use('/erp/sale', orderRoutes)
 router.use('/erp/cn', cnRoutes)
 router.use('/erp', customerRoutes)
 

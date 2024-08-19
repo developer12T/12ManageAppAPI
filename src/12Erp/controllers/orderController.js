@@ -133,7 +133,7 @@ exports.createOrder = async (req, res, next) => {
                 await Order.create(newOrder)
             }
 
-            const requestTimeout = 1*60*2000; 
+            const requestTimeout = 1*60*3000; 
             await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[DATA_API_SEND_ORDER_CASH]', {
                 timeout: requestTimeout,
             }).catch(error => {
