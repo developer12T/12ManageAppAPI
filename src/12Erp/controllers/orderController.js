@@ -127,64 +127,6 @@ exports.addOrder = async (req, res, next) => {
                 await Order.create(newOrder)
             }
 
-            const requestTimeout = 1 * 60 * 3000
-            await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[DATA_API_SEND_ORDER_CM] @orderNo = :param1', {
-                timeout: requestTimeout,
-                replacements: {
-                    param1: orno,
-                }
-            }).catch(error => {
-                console.error('Error executing DATA_API_SEND_ORDER_CM:', error)
-                throw new Error('Failed to execute stored procedure DATA_API_SEND_ORDER_CM')
-            })
-
-            // await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[TEST_DATA_API_SEND_ORDER_CM] @orderNo = :param1', {
-            //     timeout: requestTimeout,
-            //     replacements: {
-            //         param1: orno,
-            //     }
-            // }).catch(error => {
-            //     console.error('Error executing TEST_DATA_API_SEND_ORDER_CM:', error)
-            //     throw new Error('Failed to execute stored procedure TEST_DATA_API_SEND_ORDER_CM')
-            // })
-
-            // await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[DATA_API_SEND_ORDER_CASH2] @orderNo = :param1', {
-            //     timeout: requestTimeout,
-            //     replacements: {
-            //         param1: orderNo,
-            //     }
-            // }).catch(error => {
-            //     console.error('Error executing DATA_API_SEND_ORDER_CASH:', error)
-            //     throw new Error('Failed to execute stored procedure DATA_API_SEND_ORDER_CASH')
-            // })
-            // await sequelize.query('EXEC [DATA_API_M3].[dbo].[INSERT_ORDER_M3] @channel = :param1', {
-            //     timeout: requestTimeout,
-            //     replacements: {
-            //         param1: 'CASH',
-            //     }
-            // }).catch(error => {
-            //     console.error('Error executing INSERT_ORDER_M3:', error)
-            //     throw new Error('Failed to execute stored procedure INSERT_ORDER_M3')
-            // })
-
-            // test
-            // const requestTimeout = 1*60*1000; 
-            // await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[TEST_DATA_API_SEND_ORDER_CASH]', {
-            // }).catch(error => {
-            //     console.error('Error executing DATA_API_SEND_ORDER_CASH:', error)
-            //     throw new Error('Failed to execute stored procedure DATA_API_SEND_ORDER_CASH')
-            // })
-
-            // await sequelize.query('EXEC [DATA_API_M3].[dbo].[TEST_INSERT_ORDER_M3] @channel = :param1', {
-            //     timeout: requestTimeout,
-            //     replacements: {
-            //         param1: 'CASH',
-            //     }
-            // }).catch(error => {
-            //     console.error('Error executing INSERT_ORDER_M3:', error)
-            //     throw new Error('Failed to execute stored procedure INSERT_ORDER_M3')
-            // })
-
             await axios.post('http://192.168.2.97:8383/M3API/OrderManage/Order/updateNumberRunning', {
                 lastno: lastNo,
                 series: 'ย',
@@ -209,50 +151,47 @@ exports.addOrder = async (req, res, next) => {
 
 exports.addOrderErp = async (req, res, next) => {
     try {
-        const { order } = req.body
+        const { order } = req.body;
 
+        const requestTimeout = 10 * 60 * 1000
 
         for (const listData of order) {
-            const { orderNo } = listData
+            const { orderNo } = listData;
 
-            const requestTimeout = 1 * 60 * 3000;
-            await sequelize.query('EXEC [DATA_API_M3].[dbo].[INSERT_ORDER_CM] @channel = :param1, @orderNo = :param2', {
-                timeout: requestTimeout,
-                replacements: {
-                    param1: 'CASH',
-                    param2: orderNo
-                }
-            }).catch(error => {
+            try {
+                await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[DATA_API_SEND_ORDER_CM] @orderNo = :param1', {
+                    timeout: requestTimeout,
+                    replacements: {
+                        param1: orderNo,
+                    }
+                });
+            } catch (error) {
+                console.error('Error executing DATA_API_SEND_ORDER_CM:', error);
+                throw new Error('Failed to execute stored procedure DATA_API_SEND_ORDER_CM');
+            }
+
+            try {
+                await sequelize.query('EXEC [DATA_API_M3].[dbo].[INSERT_ORDER_CM] @channel = :param1, @orderNo = :param2', {
+                    timeout: requestTimeout,
+                    replacements: {
+                        param1: 'CASH',
+                        param2: orderNo
+                    }
+                });
+            } catch (error) {
                 console.error('Error executing INSERT_ORDER_M3:', error)
                 throw new Error('Failed to execute stored procedure INSERT_ORDER_M3')
-            })
+            }
 
-            // await sequelize.query('EXEC [DATA_API_M3].[dbo].[TEST_INSERT_ORDER_CM] @channel = :param1, @orderNo = :param2', {
-            //     timeout: requestTimeout,
-            //     replacements: {
-            //         param1: 'CASH',
-            //         param2: orderNo
-            //     }
-            // }).catch(error => {
-            //     console.error('Error executing INSERT_ORDER_M3:', error)
-            //     throw new Error('Failed to execute stored procedure INSERT_ORDER_M3')
-            // })
-
-            // const requestTimeout = 1*60*1000; 
-            // await sequelize.query('EXEC [DATA_API_M3].[dbo].[TEST_INSERT_ORDER_M3] @channel = :param1', {
-            //     timeout: requestTimeout,
-            //     replacements: {
-            //         param1: 'CASH',
-            //     }
-            // }).catch(error => {
-            //     console.error('Error executing INSERT_ORDER_M3:', error)
-            //     throw new Error('Failed to execute stored procedure INSERT_ORDER_M3')
-            // })
-
-            await axios.post(`${process.env.CMS_API_BASE_URL}/order/UpdateOrder`, {
-                order: orderNo,
-                status: '20'
-            })
+            try {
+                await axios.post(`${process.env.CMS_API_BASE_URL}/order/UpdateOrder`, {
+                    order: orderNo,
+                    status: '20'
+                });
+            } catch (error) {
+                console.error('Error updating order status:', error)
+                throw new Error('Failed to update order status')
+            }
         }
 
         res.status(200).json({ message: 'Order created and synced successfully' })
