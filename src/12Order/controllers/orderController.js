@@ -37,7 +37,6 @@ exports.getOrderCm = async (req, res, next) => {
             warehouse: '105'
         })
         stockData.push(...warehouseStockData)
-        console.log('1',stockData)
 
         for (let order of orders) {
             let send = true
@@ -49,7 +48,6 @@ exports.getOrderCm = async (req, res, next) => {
                 acc[item.id] += item.qtyPcs
                 return acc
             }, {})
-            console.log('2',groupedItems)
 
             for (let itemId in groupedItems) {
                 const stockItem = stockData.find(stock => stock.itemcode === itemId)
@@ -197,21 +195,21 @@ exports.getOrderCmDetail = async (req, res, next) => {
 //                     const response = await axios.post('http://192.168.2.97:8383/M3API/ItemManage/Item/getItemConvertItemcode', {
 //                         itcode: item.id
 //                     });
-//                     conversionData = response.data[0].type;
+//                     conversionData = response.data[0].type
 //                 } catch (error) {
-//                     console.warn(`No conversion data found for item: ${item.id}, defaulting to PCS`);
+//                     console.warn(`No conversion data found for item: ${item.id}, defaulting to PCS`)
 //                     conversionData = [{ unit: 'PCS', factor: 1 }];
 //                 }
 
-//                 const convertedUnits = convertToUnits(item.qtyPcs, conversionData);
+//                 const convertedUnits = convertToUnits(item.qtyPcs, conversionData)
 
-//                 const existingItem = summarizedList.find(i => i.id === item.id);
+//                 const existingItem = summarizedList.find(i => i.id === item.id)
 
 //                 if (existingItem) {
-//                     existingItem.qtyPcs += item.qtyPcs;
-//                     existingItem.convertedUnits = convertToUnits(existingItem.qtyPcs, conversionData);
+//                     existingItem.qtyPcs += item.qtyPcs
+//                     existingItem.convertedUnits = convertToUnits(existingItem.qtyPcs, conversionData)
 //                 } else {
-//                     const { id, name, qty, qtyPcs } = item;
+//                     const { id, name, qty, qtyPcs } = item
 //                     summarizedList.push({ 
 //                         id,
 //                         name,
@@ -223,80 +221,9 @@ exports.getOrderCmDetail = async (req, res, next) => {
 //             }
 //         }
 
-//         res.status(200).json(summarizedList);
+//         res.status(200).json(summarizedList)
 //     } catch (error) {
-//         console.error('Error summarizing all orders:', error);
-//         next(error);
-//     }
-// };
-
-// const convertToUnits = (qtyPcs, conversionFactors) => {
-//     let remainingPcs = qtyPcs;
-//     const convertedUnits = {
-//         CTN: { qty: 0 },
-//         BAG: { qty: 0 },
-//         PCS: { qty: remainingPcs } 
-//     };
-
-//     conversionFactors.forEach(({ unit, factor }) => {
-//         if (unit !== 'PCS') {
-//             const qty = Math.floor(remainingPcs / factor)
-//             remainingPcs = remainingPcs % factor
-//             convertedUnits[unit] = { qty }
-//             convertedUnits["PCS"].qty = remainingPcs
-//         }
-//     });
-
-//     return convertedUnits;
-// };
-
-// exports.summaryOrder = async (req, res, next) => {
-//     try {
-//         const orders = req.body
-
-//         const summarizedOrders = orders.map(order => {
-//             const summarizedList = [];
-
-//             for (let item of order.list) {
-//                 const convertedUnits = convertToUnits(item.qty, item.unitText)
-
-//                 const existingItem = summarizedList.find(i => i.id === item.id)
-
-//                 if (existingItem) {
-//                     existingItem.qtyPcs += item.qtyPcs
-//                     existingItem.convertedUnits = mergeConvertedUnits(existingItem.convertedUnits, convertedUnits)
-//                 } else {
-//                     const { id, name, qty, qtyPcs } = item
-//                     summarizedList.push({
-//                         id,
-//                         name,
-//                         qty,
-//                         qtyPcs,
-//                         convertedUnits
-//                     });
-//                 }
-//             }
-
-//             return {
-//                 orderNo: order.orderNo,
-//                 saleMan: order.saleMan,
-//                 saleCode: order.saleCode,
-//                 area: order.area,
-//                 storeId: order.storeId,
-//                 storeName: order.storeName,
-//                 address: order.address,
-//                 taxID: order.taxID,
-//                 tel: order.tel,
-//                 warehouse: order.warehouse,
-//                 note: order.note,
-//                 createDate: order.createDate,
-//                 list: summarizedList
-//             }
-//         })
-
-//         res.status(200).json(summarizedOrders)
-//     } catch (error) {
-//         console.error('Error summarizing orders:', error)
+//         console.error('Error summarizing all orders:', error)
 //         next(error)
 //     }
 // }
@@ -400,6 +327,8 @@ exports.summaryAll = async (req, res, next) => {
                 totalSmall += convertedUnits.small.qty
             }
         }
+
+        summarizedList.sort((a, b) => a.id.localeCompare(b.id))
 
         const response = {
             list: summarizedList,
