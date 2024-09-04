@@ -8,7 +8,6 @@ const axiosInstance = axios.create({
     },
 });
 
-// Request Interceptor
 axiosInstance.interceptors.request.use(
     config => {
         const token = 'YOUR_ACCESS_TOKEN';
@@ -30,7 +29,6 @@ axiosInstance.interceptors.request.use(
     }
 );
 
-// Response Interceptor
 axiosInstance.interceptors.response.use(
     response => {
         console.log('Response received at:', new Date().toLocaleString());

@@ -141,11 +141,11 @@ exports.addOrder = async (req, res, next) => {
                 co: orno
             })
 
-            await axios.post(`${process.env.CMS_API_BASE_URL}/route/updateListOrder`, {
-                order: orderNo,
-                status: '15',
-                co: orno
-            })
+            // await axios.post(`${process.env.CMS_API_BASE_URL}/route/updateListOrder`, {
+            //     order: orderNo,
+            //     status: '15',
+            //     co: orno
+            // })
         }
 
         res.status(200).json({ message: 'Order created and synced successfully' })
