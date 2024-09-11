@@ -355,9 +355,9 @@ const convertToUnits = (qty, unitText) => {
 
     if (unitText === 'CTN') {
         convertedUnits.large.qty = qty
-    } else if (['BAG', 'PAC'].includes(unitText)) {
+    } else if (['BAG', 'PAC','CRT'].includes(unitText)) {
         convertedUnits.medium.qty = qty
-    } else if (['PCS', 'BOT', 'CRT'].includes(unitText)) {
+    } else if (['PCS', 'BOT'].includes(unitText)) {
         convertedUnits.small.qty = qty
     }
 
