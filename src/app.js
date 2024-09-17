@@ -19,8 +19,8 @@ app.use(cors({
 }));
 
 // Routes
-app.use('/', orderRoutes)
-app.use('/', erpRoutes)
+app.use('/api', orderRoutes)
+app.use('/api', erpRoutes)
 
 // Error handling middleware
 app.use(errorHandler)
