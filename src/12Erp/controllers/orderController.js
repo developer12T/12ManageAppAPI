@@ -2,6 +2,7 @@ const axios = require('axios')
 const Order = require('../models/order')
 const { sequelize } = require('../config/db')
 const { QueryTypes } = require('sequelize')
+const pLimit = require('p-limit')
 
 exports.syncOrders = async (req, res, next) => {
     try {
@@ -155,13 +156,66 @@ exports.addOrder = async (req, res, next) => {
     }
 }
 
+// exports.addOrderErp = async (req, res, next) => {
+//     try {
+//         const { order } = req.body;
+
+//         const requestTimeout = 10 * 60 * 1000
+
+//         for (const listData of order) {
+//             const { orderNo } = listData;
+
+//             try {
+//                 await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[DATA_API_SEND_ORDER_CM] @orderNo = :param1', {
+//                     timeout: requestTimeout,
+//                     replacements: {
+//                         param1: orderNo,
+//                     }
+//                 });
+//             } catch (error) {
+//                 console.error('Error executing DATA_API_SEND_ORDER_CM:', error);
+//                 throw new Error('Failed to execute stored procedure DATA_API_SEND_ORDER_CM');
+//             }
+
+//             try {
+//                 await sequelize.query('EXEC [DATA_API_M3].[dbo].[INSERT_ORDER_CM] @channel = :param1, @orderNo = :param2', {
+//                     timeout: requestTimeout,
+//                     replacements: {
+//                         param1: 'CASH',
+//                         param2: orderNo
+//                     }
+//                 });
+//             } catch (error) {
+//                 console.error('Error executing INSERT_ORDER_M3:', error)
+//                 throw new Error('Failed to execute stored procedure INSERT_ORDER_M3')
+//             }
+
+//             try {
+//                 await axios.post(`${process.env.CMS_API_BASE_URL}/order/UpdateOrder`, {
+//                     order: orderNo,
+//                     status: '20'
+//                 });
+//             } catch (error) {
+//                 console.error('Error updating order status:', error)
+//                 throw new Error('Failed to update order status')
+//             }
+//         }
+
+//         res.status(200).json({ message: 'Order created and synced successfully' })
+//     } catch (error) {
+//         console.error('Error creating order:', error)
+//         next(error)
+//     }
+// }
+
 exports.addOrderErp = async (req, res, next) => {
     try {
-        const { order } = req.body;
-
+        const { order } = req.body
         const requestTimeout = 10 * 60 * 1000
 
-        for (const listData of order) {
+        const limit = pLimit(5)
+
+        const promises = order.map((listData) => limit(async () => {
             const { orderNo } = listData;
 
             try {
@@ -169,40 +223,32 @@ exports.addOrderErp = async (req, res, next) => {
                     timeout: requestTimeout,
                     replacements: {
                         param1: orderNo,
-                    }
+                    },
                 });
-            } catch (error) {
-                console.error('Error executing DATA_API_SEND_ORDER_CM:', error);
-                throw new Error('Failed to execute stored procedure DATA_API_SEND_ORDER_CM');
-            }
 
-            try {
                 await sequelize.query('EXEC [DATA_API_M3].[dbo].[INSERT_ORDER_CM] @channel = :param1, @orderNo = :param2', {
                     timeout: requestTimeout,
                     replacements: {
                         param1: 'CASH',
-                        param2: orderNo
-                    }
+                        param2: orderNo,
+                    },
                 });
-            } catch (error) {
-                console.error('Error executing INSERT_ORDER_M3:', error)
-                throw new Error('Failed to execute stored procedure INSERT_ORDER_M3')
-            }
 
-            try {
                 await axios.post(`${process.env.CMS_API_BASE_URL}/order/UpdateOrder`, {
                     order: orderNo,
-                    status: '20'
+                    status: '20',
                 });
             } catch (error) {
-                console.error('Error updating order status:', error)
-                throw new Error('Failed to update order status')
+                console.error(`Error processing order ${orderNo}:`, error);
+                throw new Error(`Failed to process order ${orderNo}`)
             }
-        }
+        }))
 
-        res.status(200).json({ message: 'Order created and synced successfully' })
+        await Promise.all(promises)
+
+        res.status(200).json({ message: 'Orders created and synced successfully' })
     } catch (error) {
-        console.error('Error creating order:', error)
+        console.error('Error creating orders:', error)
         next(error)
     }
 }
