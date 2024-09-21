@@ -2,7 +2,6 @@ const axios = require('axios')
 const Order = require('../models/order')
 const { sequelize } = require('../config/db')
 const { QueryTypes } = require('sequelize')
-const pLimit = require('p-limit')
 
 exports.syncOrders = async (req, res, next) => {
     try {
@@ -210,12 +209,11 @@ exports.addOrder = async (req, res, next) => {
 
 exports.addOrderErp = async (req, res, next) => {
     try {
-        const { order } = req.body
-        const requestTimeout = 10 * 60 * 1000
+        const { order } = req.body;
 
-        const limit = pLimit(5)
+        const requestTimeout = 15 * 60 * 1000;
 
-        const promises = order.map((listData) => limit(async () => {
+        await Promise.all(order.map(async (listData) => {
             const { orderNo } = listData;
 
             try {
@@ -239,12 +237,10 @@ exports.addOrderErp = async (req, res, next) => {
                     status: '20',
                 });
             } catch (error) {
-                console.error(`Error processing order ${orderNo}:`, error);
+                console.error(`Error processing order ${orderNo}:`, error)
                 throw new Error(`Failed to process order ${orderNo}`)
             }
         }))
-
-        await Promise.all(promises)
 
         res.status(200).json({ message: 'Orders created and synced successfully' })
     } catch (error) {
