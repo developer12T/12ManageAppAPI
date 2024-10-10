@@ -207,83 +207,15 @@ exports.addOrder = async (req, res, next) => {
 //     }
 // }
 
-// exports.addOrderErp = async (req, res, next) => {
-//     let t;
-//     try {
-//         // t = await sequelize.transaction()
-
-//         const { order } = req.body
-
-//         for (const listData of order) {
-//             const { orderNo } = listData
-
-//             const requestTimeout = 20 * 60 * 1000;
-
-//             await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[DATA_API_SEND_ORDER_CM] @orderNo = :param1', {
-//                 timeout: requestTimeout,
-//                 replacements: {
-//                     param1: orderNo,
-//                 },
-//                 // transaction: t 
-//             });
-
-//             await sequelize.query('EXEC [DATA_API_M3].[dbo].[INSERT_ORDER_CM] @channel = :param1, @orderNo = :param2', {
-//                 timeout: requestTimeout,
-//                 replacements: {
-//                     param1: 'CASH',
-//                     param2: orderNo
-//                 },
-//                 // transaction: t 
-//             });
-
-//             await axios.post(`${process.env.CMS_API_BASE_URL}/order/UpdateOrder`, {
-//                 order: orderNo,
-//                 status: '20'
-//             });
-//         }
-
-//         // await t.commit();
-//         res.status(200).json({ message: 'Order created and synced successfully' });
-//     } catch (error) {
-//         // if (t) {
-//         //     try {
-//         //         await t.rollback();
-//         //     } catch (rollbackError) {
-//         //         console.error('Error rolling back transaction:', rollbackError);
-//         //     }
-//         // }
-//         console.error('Error creating order:', error);
-//         next(error);
-//     }
-// }
-
 exports.addOrderErp = async (req, res, next) => {
     try {
         const order = req.body
-        await axios.post(`${process.env.CMS_API_BASE_URL1}/order/insert`, 
+        await axios.post(`${process.env.ERP_API_BASE_URL}/order/insert`, 
             order
         )
 
         for (const listData of order) {
             const { orderNo } = listData
-
-            // console.log(listData)
-            // const requestTimeout = 20 * 60 * 1000;
-
-            // await sequelize.query('EXEC [DATA_API_TOHOME].[dbo].[DATA_API_SEND_ORDER_CM] @orderNo = :param1', {
-            //     timeout: requestTimeout,
-            //     replacements: {
-            //         param1: orderNo,
-            //     },
-            // });
-
-            // await sequelize.query('EXEC [DATA_API_M3].[dbo].[INSERT_ORDER_CM] @channel = :param1, @orderNo = :param2', {
-            //     timeout: requestTimeout,
-            //     replacements: {
-            //         param1: 'CASH',
-            //         param2: orderNo
-            //     },
-            // });
 
             await axios.post(`${process.env.CMS_API_BASE_URL}/order/UpdateOrder`, {
                 order: orderNo,
