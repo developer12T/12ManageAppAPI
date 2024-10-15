@@ -94,38 +94,38 @@ exports.addOrder = async (req, res, next) => {
 
             const orno = lastNo += 1
 
-            for (let index = 0; index < list.length; index++) {
-                const item = list[index]
+            // for (let index = 0; index < list.length; index++) {
+            //     const item = list[index]
 
-                const newOrder = {
-                    OAORDT: formattedDate,
-                    RLDT: formattedDate,
-                    ORNO: orno,
-                    // ORNO: orderNo,
-                    CUOR: '',
-                    OAORTP: 'M31',
-                    WHLO: warehouse,
-                    OAOREF: orderNo,
-                    OAYREF: note,
-                    FACI: 'F10',
-                    OAFRE1: 'YSEND',
-                    CUNO: storeId,
-                    OBPONR: index + 1,
-                    OBITNO: item.id,
-                    OBALUN: item.unitText,
-                    OBORQA: item.qty,
-                    OBSAPR: item.pricePerQty,
-                    OBDIA2: item.discount,
-                    OBPIDE: item.type === 'free' ? item.proCode : '',
-                    OBSMCD: saleCode,
-                    OARESP: 'SA02',
-                    STATUS: '0',
-                    INSERT_AT: new Date().toISOString(),
-                    UPDATE_AT: new Date().toISOString()
-                };
+            //     const newOrder = {
+            //         OAORDT: formattedDate,
+            //         RLDT: formattedDate,
+            //         ORNO: orno,
+            //         // ORNO: orderNo,
+            //         CUOR: '',
+            //         OAORTP: 'M31',
+            //         WHLO: warehouse,
+            //         OAOREF: orderNo,
+            //         OAYREF: note,
+            //         FACI: 'F10',
+            //         OAFRE1: 'YSEND',
+            //         CUNO: storeId,
+            //         OBPONR: index + 1,
+            //         OBITNO: item.id,
+            //         OBALUN: item.unitText,
+            //         OBORQA: item.qty,
+            //         OBSAPR: item.pricePerQty,
+            //         OBDIA2: item.discount,
+            //         OBPIDE: item.type === 'free' ? item.proCode : '',
+            //         OBSMCD: saleCode,
+            //         OARESP: 'SA02',
+            //         STATUS: '0',
+            //         INSERT_AT: new Date().toISOString(),
+            //         UPDATE_AT: new Date().toISOString()
+            //     };
 
-                await Order.create(newOrder)
-            }
+            //     await Order.create(newOrder)
+            // }
 
             await axios.post('http://192.168.2.97:8383/M3API/OrderManage/Order/updateNumberRunning', {
                 lastno: lastNo,
