@@ -53,6 +53,10 @@ const Product = sequelize.define('MASPRD', {
     Item_Status: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    BBE: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 },
     {

@@ -9,7 +9,7 @@ exports.getProductLot = async (req, res, next) => {
             attributes: ['Lot'],
             where: {
                 MMITNO: itemNo,
-                LMEXPI: itemExp
+                BBE: itemExp
             }
         });
 
