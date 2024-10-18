@@ -1,15 +1,31 @@
 const axiosInstance = require('../../utils/axiosInstance')
 const axios = require('axios')
 
+// exports.getCnOrderCm = async (req, res, next) => {
+//     try {
+//         const response = await axiosInstance.get('/cnOrder/getAll')
+//         res.status(200).json(response.data)
+//     } catch (error) {
+//         console.error('Error fetching data from external API:', error)
+//         next(error); 
+//     }
+// }
+
 exports.getCnOrderCm = async (req, res, next) => {
     try {
-        const response = await axiosInstance.get('/cnOrder/getAll')
+        const { status } = req.query
+        if (!status) {
+            return res.status(400).json({ message: "Status query parameter is required." })
+        }
+        const response = await axiosInstance.get('/cnOrder/getAll', {
+            params: { status }
+        })
         res.status(200).json(response.data)
     } catch (error) {
         console.error('Error fetching data from external API:', error)
         next(error); 
     }
-};
+}
 
 exports.getCnOrderCmDetail = async (req, res, next) => {
     try {
@@ -20,4 +36,4 @@ exports.getCnOrderCmDetail = async (req, res, next) => {
         console.error('Error fetching data from external API:', error)
         next(error); 
     }
-};
+}

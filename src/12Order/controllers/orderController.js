@@ -4,7 +4,7 @@ const axios = require('axios')
 exports.getOrderCm = async (req, res, next) => {
     try {
         const { status } = req.query
-        console.log('Status:', status)
+        // console.log('Status:', status)
         if (!status) {
             return res.status(400).json({ message: "Status query parameter is required." })
         }
