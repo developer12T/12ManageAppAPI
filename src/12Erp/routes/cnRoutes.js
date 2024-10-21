@@ -3,6 +3,6 @@ const { createOrder } = require('../controllers/cnController');
 
 const router = express.Router();
 
-router.post('/createOrder', createOrder)
+router.post('/createCnOrder', createOrder)
 
 module.exports = router;
