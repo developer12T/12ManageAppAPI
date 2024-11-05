@@ -41,3 +41,26 @@ exports.createOrder = async (req, res, next) => {
         next(error)
     }
 }
+
+exports.addOrderErp = async (req, res, next) => {
+    try {
+        const order = req.body
+        await axios.post(`${process.env.ERP_API_BASE_URL}/order/insert`, 
+            order
+        )
+
+        for (const listData of order) {
+            const { orderNo } = listData
+
+            await axios.post(`${process.env.CMS_API_BASE_URL}/cnOrder/UpdateCnOrder`, {
+                order: orderNo,
+                status: '20'
+            });
+        }
+
+        res.status(200).json({ message: 'Order added to ERP successfully' });
+    } catch (error) {
+        console.error('Error creating order:', error);
+        next(error);
+    }
+}
