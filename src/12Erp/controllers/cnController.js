@@ -1,7 +1,4 @@
 const axios = require('axios')
-const CN = require('../models/cn')
-const { sequelize } = require('../config/db')
-const { QueryTypes } = require('sequelize')
 
 exports.createOrder = async (req, res, next) => {
     try {
@@ -14,7 +11,7 @@ exports.createOrder = async (req, res, next) => {
         })
 
         let lastNo = seriesData.lastNo
-        console.log(order)
+        // console.log(order)
         for (const listData of order) {
             const { orderNo } = listData
 
