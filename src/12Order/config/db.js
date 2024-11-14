@@ -3,7 +3,10 @@ require('dotenv').config();
 
 const connectOrderDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.ORDER_DB_URI);
+        const conn = await mongoose.connect(process.env.ORDER_DB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        })
         console.log('Order Database connected');
         return conn;
     } catch (error) {

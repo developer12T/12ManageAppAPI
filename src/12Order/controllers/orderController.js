@@ -51,7 +51,6 @@ exports.getOrderCm = async (req, res, next) => {
             }
             order.send = send
         }
-
         res.status(200).json(orders)
     } catch (error) {
         console.error('Error fetching data from external API:', error)
@@ -328,7 +327,7 @@ const convertToUnits = (qty, unitText) => {
 
     if (unitText === 'CTN') {
         convertedUnits.large.qty = qty
-    } else if (['BAG', 'PAC','CRT'].includes(unitText)) {
+    } else if (['BAG', 'PAC', 'CRT'].includes(unitText)) {
         convertedUnits.medium.qty = qty
     } else if (['PCS', 'BOT'].includes(unitText)) {
         convertedUnits.small.qty = qty
