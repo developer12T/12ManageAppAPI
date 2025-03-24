@@ -70,6 +70,11 @@ exports.syncCustomer = async (req, res, next) => {
                 storeId: storeId,
                 status: "15"
             });
+
+            await axios.post(`${process.env.CMS_API_BASE_URL}/store/updateOrderByStore`, {
+                storeId: storeId,
+                status: "10"
+            });
         }
 
         res.status(200).json({ message: 'Data synced successfully' });
